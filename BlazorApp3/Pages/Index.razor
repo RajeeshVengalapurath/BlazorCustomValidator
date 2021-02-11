@@ -1,0 +1,31 @@
+﻿@page "/"
+
+<EditForm Model="Person" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <CustomValidator @ref="customValidator" />
+    <ValidationSummary />
+
+    <InputText @bind-Value="Person.Name" />
+    <ValidationMessage For="() => Person.Name" />
+    <button type="submit">Subit</button>
+</EditForm>
+
+@code {
+    public Models.Person Person { get; set; } = new Models.Person();
+    private CustomValidator customValidator;
+
+    protected async Task HandleValidSubmit() {
+        customValidator.ClearErrors();
+
+        var errors = new Dictionary<string, List<string>>();
+
+        if (Person.Name == "x")
+        {
+            errors.Add(nameof(Person.Name), new List<string>() { "Name cannot be x" });
+        }
+        if (errors.Count() > 0)
+        {
+            customValidator.DisplayErrors(errors);
+        }
+    }
+}
